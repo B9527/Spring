@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    
+    <!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+    
+    <bean id="greetAspector" class="com.somnus.spring.namespace.aop.GreetAspector"/>
+    
+    <bean id="greetingImpl"  class="com.somnus.spring.namespace.aop.GreetingImpl"/>
+    
+    <!-- AOP配置 -->
+    <aop:config>
+        <!-- 声明一个切面,并注入切面Bean,相当于@Aspect -->
+        <aop:aspect id="greetAspector" ref="greetAspector">
+            <!-- 配置一个切入点,相当于@Pointcut -->
+            <aop:pointcut id="greetPointcut" expression="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" />
+            <!-- 配置通知,相当于@Before、@After、@AfterReturn、@Around、@AfterThrowing -->
+            <aop:before             pointcut-ref="greetPointcut" method="before"/>
+            <aop:after              pointcut-ref="greetPointcut" method="after"/>
+            <aop:after-returning    pointcut-ref="greetPointcut" method="afterReturning" returning="result"/>
+            <aop:after-throwing     pointcut-ref="greetPointcut" method="afterThrowing"  throwing="ex"/>
+            <aop:around             pointcut-ref="greetPointcut" method="around"/>
+            <aop:declare-parents types-matching="com.somnus.spring.namespace.aop.GreetingImpl" 
+                implement-interface="com.somnus.spring.namespace.aop.Apology"
+                default-impl="com.somnus.spring.namespace.aop.ApologyImpl"/>
+        </aop:aspect>
+    </aop:config>
+    
+    <!-- ※※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ 使用【pointcut】也是可以的※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※ ※  -->
+    <aop:config>
+        <!-- 声明一个切面,并注入切面Bean,相当于@Aspect -->
+        <aop:aspect id="greetAspector2" ref="greetAspector">
+            <!-- 配置一个切入点,相当于@Pointcut -->
+            <aop:pointcut id="greetPointcut" expression="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" />
+            <!-- 配置通知,相当于@Before、@After、@AfterReturn、@Around、@AfterThrowing -->
+            <aop:before             pointcut="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" method="before"/>
+            <aop:after              pointcut="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" method="after"/>
+            <aop:after-returning    pointcut="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" method="afterReturning" returning="result"/>
+            <aop:after-throwing     pointcut="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" method="afterThrowing"  throwing="ex"/>
+            <aop:around             pointcut="execution(* com.somnus.spring.namespace.aop.GreetingImpl.*(..))" method="around"/>
+            <aop:declare-parents types-matching="com.somnus.spring.namespace.aop.GreetingImpl" 
+                implement-interface="com.somnus.spring.namespace.aop.Apology"
+                default-impl="com.somnus.spring.namespace.aop.ApologyImpl"/>
+        </aop:aspect>
+    </aop:config>
+    
+</beans>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+    
+    <bean id="greetingAfterReturningAdvice" class="com.somnus.spring.xml.aop.GreetingAfterReturningAdvice"/>
+    <bean id="greetingAroundAdvice" class="com.somnus.spring.xml.aop.GreetingAroundAdvice"/>
+    <bean id="greetingBeforeAdvice" class="com.somnus.spring.xml.aop.GreetingBeforeAdvice"/>
+    <bean id="greetingThrowsAdvice" class="com.somnus.spring.xml.aop.GreetingThrowsAdvice"/>
+    <bean id="greetingIntroAdvice" class="com.somnus.spring.xml.aop.GreetingIntroAdvice"/>
+    
+    <bean id="greetingImpl" class="com.somnus.spring.xml.aop.GreetingImpl"/>
+    <bean id="greetingImply" class="com.somnus.spring.xml.aop.GreetingImply"/>
+    
+    
+    <!-- 配置一个代理 -->
+    <bean id="greetingProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="interfaces" value="com.somnus.spring.xml.aop.GreetingInterface"/> 	<!-- 需要代理的接口 -->
+        <property name="target" ref="greetingImpl"/>  								<!-- 目标接口实现类 -->
+        <property name="interceptorNames">        <!-- 拦截器名称（也就是增强类名称，Spring Bean 的 id） -->
+            <list>
+                <value>greetingBeforeAdvice</value>
+                <value>greetingAfterReturningAdvice</value>
+            </list>
+        </property>
+    </bean>
+    <!-- 使用ProxyFactoryBean或者其它IOC相关类来创建AOP代理的最重要好处就是通知切入点也可以由IOC来管理 -->
+    <!-- 被代理类没有任何接口，使用CGLIB代理，否则JDK代理 -->
+    <!-- 通过设置proxyTargetClass为true，可【强制使】用CGLIB -->
+    <!-- 如果目标类实现了一个(或者多个)接口，那么创建代理的类型将依赖ProxyFactoryBean的配置 -->
+    <!-- 如果ProxyFactoryBean的proxyInterfaces属性被设置为一个或者多个全限定接口名，基于JDK的代理将被创建 -->
+    <!-- 如果ProxyFactoryBean的proxyInterfaces属性没有被设置，但是目标类实现了一个(或者更多)接口，那么ProxyFactoryBean将自动检测到这个目标类已经实现了至少一个接口，创建一个基于JDK的代理 -->
+    
+    <bean id="greetingProxy2" class="org.springframework.aop.framework.ProxyFactoryBean">
+        <property name="interfaces" value="com.somnus.spring.xml.aop.Apology"/><!-- 需要动态实现的接口 -->
+        <property name="target" ref="greetingImpl"/>                    <!-- 目标类 -->
+        <property name="interceptorNames" value="greetingIntroAdvice"/> <!-- 引入增强 -->
+        <property name="proxyTargetClass" value="true"/>                <!-- 代理目标类（默认为 false，代理接口） -->
+    </bean>
+   
+   	<!-- 配置一个切面 -->  
+    <bean id="greetingAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">  
+        <property name="advice" ref="greetingAroundAdvice"/>                      <!-- 增强 -->  
+        <property name="pattern" value="com.somnus.spring.xml.aop.GreetingImpl.good.*"/> <!-- 切点（正则表达式） -->  
+    </bean>  
+   
+    <!-- 配置一个代理 -->
+    <bean id="greetingProxy3" class="org.springframework.aop.framework.ProxyFactoryBean"> 
+        <property name="interfaces" value="com.somnus.spring.xml.aop.GreetingInterface"/> 	<!-- 需要代理的接口 --> 
+        <property name="target" ref="greetingImpl"/>                		<!-- 目标接口实现类 -->  
+        <property name="interceptorNames" value="greetingAdvisor"/> 		<!-- 切面 -->  
+        <property name="proxyTargetClass" value="false"/>            		<!-- 代理目标类（默认为 false，代理接口）-->  
+    </bean>
+    
+    <!-- 自动代理（扫描 Bean名称） -->
+    <!-- <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">  -->
+        <!-- <property name="beanNames" value="*Impl"/> -->                       <!-- 只为后缀是“Impl”的 Bean 生成代理 -->  
+        <!-- <property name="interceptorNames" value="greetingAroundAdvice"/> --> <!-- 增强 -->  
+        <!-- <property name="optimize" value="true"/> -->                         <!-- 是否对代理生成策略进行优化 -->  
+    <!-- </bean> -->
+    <!-- optimize若为 true 时，则可对代理生成策略进行优化（默认是 false 的）。也就是说，如果该类有接口，
+                              就代理接口（使用 JDK 动态代理）；如果没有接口，就代理类（使用 CGLib 动态代理）。
+                              而并非像之前使用的 proxyTargetClass 属性那样，强制代理类，而不考虑代理接口的方式。
+     -->
+    
+</beans>

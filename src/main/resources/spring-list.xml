@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	
+    <!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+    
+    <bean id="address1" class="com.somnus.spring.xml.list.Address">
+        <property name="city" value="shanghai"/>
+    </bean>
+    
+    <bean id="address2" class="com.somnus.spring.xml.list.Address">
+        <property name="city" value="shanghai"/>
+    </bean>
+    
+    <bean id="l1" class="com.somnus.spring.xml.list.List">
+        <property name="username">
+            <list>
+                <value>pomnus</value>
+                <value>pmile</value>
+            </list>
+        </property>
+        <property name="address">
+            <list>
+                <ref bean="address1"/>
+                <ref bean="address2"/>
+            </list>
+        </property>
+    </bean>
+    
+    <bean id="l2" class="com.somnus.spring.xml.list.List">
+        <property name="username">
+            <util:list list-class="java.util.ArrayList">
+                <value>somnus</value>
+                <value>smile</value>
+            </util:list>
+        </property>
+        <property name="address">
+            <util:list list-class="java.util.ArrayList">
+                <ref bean="address1"/>
+                <ref bean="address2"/>
+            </util:list>
+        </property>
+    </bean>
+    
+</beans>

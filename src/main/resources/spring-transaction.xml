@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	<description>数据源及事务配置</description>
+	
+	<context:component-scan base-package="com.somnus.spring.xml.transaction" />
+	
+	<!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+
+	<context:property-placeholder
+		ignore-unresolvable="true" location="classpath:/env/configurations-dev.properties" />
+	<!-- <context:property-placeholder 
+		ignore-unresolvable="true" 
+		location="classpath:/env/configurations-dev.properties,classpath:/env/configurations-dev.properties" /> -->
+	
+	<!-- 数据源配置-DBCP数据库连接池 -->
+	<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="${jdbc.initialSize}" />
+		<property name="maxActive" value="${jdbc.maxActive}" />
+		<property name="maxIdle" value="${jdbc.maxIdle}" />
+		<property name="minIdle" value="${jdbc.minIdle}" />
+		<property name="maxWait" value="${jdbc.maxWait}" />
+		<property name="defaultAutoCommit" value="false" />
+		<!-- 解密密码必须要配置的项 -->
+		<property name="filters" value="config" />
+		<property name="connectionProperties" value="config.decrypt=true;config.decrypt.key=${jdbc.publickey}" />
+	</bean>
+
+	<!-- 数据源配置 -->
+	<!-- 代理datasource，使其能够显式获取preparedStatement的参数值 -->
+	<bean id="proxyDataSource" class="org.jdbcdslog.ConnectionPoolDataSourceProxy">
+		<property name="targetDSDirect" ref="dataSource" />
+	</bean>
+
+	<!-- 配置事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="proxyDataSource" />
+	</bean>
+	
+	<!-- 注解方式配置事物 -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+</beans>

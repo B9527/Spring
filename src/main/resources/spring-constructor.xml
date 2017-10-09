@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:c="http://www.springframework.org/schema/c"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	
+    <!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+    
+    <bean id="address" class="com.somnus.spring.xml.constructor.Address">
+        <property name="city" value="shanghai"/>
+    </bean>
+    
+    <!-- 静态工厂 -->
+    <bean id="c1" class="com.somnus.spring.xml.constructor.Constructor">
+        <constructor-arg value="smile"/>
+    	<constructor-arg ref="address"/>
+    </bean>
+    
+    <bean id="c2" class="com.somnus.spring.xml.constructor.Constructor" c:username="somnus" c:address-ref="address"/>
+    
+</beans>

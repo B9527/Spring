@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	
+    <!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+    
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations" value="classpath:requestinfo.properties"/>
+	</bean>
+    
+    <bean id="p1" class="com.somnus.spring.xml.properties.PropertiesService">
+    	<property name="ip" value="${system.ip}"/>
+    	<property name="version" value="${system.version}"/>
+    	<property name="properties">
+    		<props>
+    			<prop key="ip">8.8.8.8</prop>
+    			<prop key="version">1.1.0</prop>
+    		</props>
+    	</property>
+    </bean>
+    
+    <bean id="p2" class="com.somnus.spring.xml.properties.PropertiesService">
+        <property name="ip" value="${system.ip}"/>
+        <property name="version" value="${system.version}"/>
+        <property name="properties">
+            <value>
+                ip=9.9.9.9
+                version=1.1.0
+            </value>
+        </property>
+    </bean>
+    
+    <bean id="p3" class="com.somnus.spring.xml.properties.PropertiesService">
+        <property name="ip" value="${system.ip}"/>
+        <property name="version" value="${system.version}"/>
+        <property name="properties">
+            <util:properties>
+                <prop key="ip">7.7.7.7</prop>
+                <prop key="version">1.1.0</prop>
+            </util:properties>
+        </property>
+    </bean>
+    
+</beans>

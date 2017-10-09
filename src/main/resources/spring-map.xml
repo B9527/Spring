@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+	
+    <!-- application 上下文 -->
+    <bean class="com.somnus.ApplicationContextHolder"/>
+    
+    <bean id="address1" class="com.somnus.spring.xml.map.Address">
+        <property name="city" value="shanghai"/>
+    </bean>
+    
+    <bean id="address2" class="com.somnus.spring.xml.map.Address">
+        <property name="city" value="beijing"/>
+    </bean>
+    
+    <bean id="m1" class="com.somnus.spring.xml.map.Map">
+        <property name="username">
+            <map>
+		        <entry key="u1" value="somnus" /> 
+		        <entry key="u2" value="smile"/>
+		    </map>
+        </property>
+        <property name="address">
+            <map>
+                <entry key="a1" value-ref="address1" /> 
+                <entry key="a2" value-ref="address2"/>
+            </map>
+        </property>
+    </bean>
+    
+    <bean id="m2" class="com.somnus.spring.xml.map.Map">
+        <property name="username">
+            <util:map map-class="java.util.HashMap" key-type="java.lang.String" value-type="java.lang.String">
+		        <entry key="u1" value="pomnus"/>
+		        <entry key="u2" value="pmile"/>
+		    </util:map>
+        </property>
+        <property name="address">
+            <util:map map-class="java.util.HashMap" >
+		        <entry key="a1" value-ref="address1" /> 
+                <entry key="a2" value-ref="address2"/>
+		    </util:map>
+        </property>
+    </bean>
+    
+</beans>

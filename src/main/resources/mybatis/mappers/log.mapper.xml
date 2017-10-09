@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.somnus.spring.xml.transaction.dao.LogDao" >
+  
+  <insert id="insert" parameterType="com.somnus.spring.xml.transaction.model.Log" >
+    insert into t_log (content, ip) values (#{content,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR})
+  </insert>
+  
+</mapper>
